@@ -2,6 +2,7 @@ package com.safetyalarm.safetyAlarm.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,11 +16,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.configureViewResolvers(registry);
     }
     @Override
-    public void addCorsMappings(final CorsRegistry registry) {
+    public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")
-                .allowedHeaders("X-Auth-Token", "X-Refresh-Token")
-                .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
-                .allowCredentials(true);
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .exposedHeaders("X-Auth-Token")
+                .allowCredentials(true)
+                .maxAge(10000);
     }
 }
