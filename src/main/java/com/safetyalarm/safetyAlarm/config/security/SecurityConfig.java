@@ -5,6 +5,7 @@ import com.safetyalarm.safetyAlarm.config.security.jwt.JwtConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,10 +28,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtAuthFilter(jwtConfig),
                         UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/my-report", "/write/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/my-report", "/write/**")
                         .authenticated()
-                        .anyRequest()
-                        .permitAll())
+                        .requestMatchers(HttpMethod.OPTIONS, "/my-report").permitAll()
+                        .anyRequest().permitAll())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
